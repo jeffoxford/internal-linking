@@ -1,4 +1,5 @@
 from operator import index
+from os import sep
 import pandas as pd
 import time
 import streamlit as st
@@ -12,14 +13,24 @@ tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
 
 def get_data (sentences_text , file):
     sentences =tokenizer.tokenize(sentences_text)
-    df = pd.read_csv(file)
+    try:
+        df = pd.read_csv(file, encoding= 'UTF-16' , on_bad_lines='skip', sep='	')
+    except:
+        try:
+            df = pd.read_csv(file, encoding= 'UTF-8' , on_bad_lines='skip')
+        except:
+            try:
+                df = pd.read_csv(file,  on_bad_lines='skip')
+            except:
+                df = pd.read_csv(file)
 
     products_list = df.values.tolist()
 
     resultList = []
 
     for p in products_list:
-        keyword = p[0].lower()
+        keyword = str(p[0]).lower()
+        # keyword = p[0].lower()
         for sentence in sentences:
             if keyword in sentence.lower():
                 ts = sentence
