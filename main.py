@@ -59,6 +59,7 @@ if st.button('Start Process The Keyword'):
     outputDf = pd.DataFrame(resultList)
     result_df = outputDf.merge(coificent, on='Rank', how='left')
     result_df["Opportunity Score"] = result_df["Search Volume"] * result_df["Coeffecient"]
+    result_df = result_df.drop('Coeffecient', 1)
 
     st.dataframe(result_df)
     @st.cache
