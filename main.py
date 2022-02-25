@@ -30,19 +30,18 @@ def get_data (sentences_text , file):
 
     for p in products_list:
         keyword = str(p[0]).lower()
-        # keyword = p[0].lower()
         for sentence in sentences:
             if keyword in sentence.lower():
                 ts = sentence
+                resultList.append({
+                    'Keyword' : keyword
+                    ,'Text Snippet': ts
+                    ,'Search Volume': p[2]
+                    ,'Current Position': p[6]
+                    ,'Destination URL': p[7]
+                })
             else:
-                ts = ''
-        resultList.append({
-            'Keyword' : keyword
-            ,'Text Snippet': ts
-            ,'Search Volume': p[2]
-            ,'Current Position': p[6]
-            ,'Destination URL': p[7]
-        })
+                pass
     return resultList
 
 
