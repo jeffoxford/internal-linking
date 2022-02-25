@@ -1,5 +1,6 @@
 from operator import index
 from os import sep
+from unittest import result
 import pandas as pd
 import time
 import streamlit as st
@@ -37,7 +38,7 @@ def get_data (sentences_text , file):
                     'Keyword' : keyword
                     ,'Text Snippet': ts
                     ,'Search Volume': p[2]
-                    ,'Current Position': p[6]
+                    ,'Rank': p[6]
                     ,'Destination URL': p[7]
                 })
             else:
@@ -51,16 +52,20 @@ if st.button('Start Process The Keyword'):
     resultList = get_data(keywords,file_name)
 
 
+    url = 'https://raw.githubusercontent.com/jeffoxford/internal-linking/main/coefficients.csv'
 
+
+    coificent =pd.read_csv(url)
     outputDf = pd.DataFrame(resultList)
+    result_df = outputDf.merge(coificent, on='Rank', how='left')
+    result_df["Opportunity Score"] = result_df["Search Volume"] * result_df["Coeffecient"]
 
-
-    st.dataframe(outputDf)
+    st.dataframe(result_df)
     @st.cache
     def convert_df(df):
         # IMPORTANT: Cache the conversion to prevent computation on every rerun
         return df.to_csv(index=False,).encode('utf-8')
-    csv = convert_df(outputDf)
+    csv = convert_df(result_df)
 
 
     st.download_button(
